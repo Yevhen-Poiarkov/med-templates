@@ -76,24 +76,27 @@ function makeBlock(cat, originalText) {
   const wrap = document.createElement('div');
   wrap.className = 'text-block';
 
-  // Поле з текстом (редаговане, але без збереження)
+  // Створюємо textarea з текстом шаблону
   const ta = document.createElement('textarea');
   ta.value = originalText;
   wrap.appendChild(ta);
 
-  // Контейнер для кнопок
+  // Кнопки
   const ctrl = document.createElement('div');
   ctrl.className = 'controls';
 
-  // 📋 Копіювати
+  // 📋 Копіювати редаговане значення
   const copy = document.createElement('button');
   copy.textContent = '📋 Копіювати';
   copy.onclick = () => {
-    navigator.clipboard.writeText(ta.value);
+    navigator.clipboard.writeText(ta.value)
+      .then(() => {
+        console.log("Скопійовано:", ta.value);
+      });
   };
   ctrl.appendChild(copy);
 
-  // ♻️ Скинути
+  // ♻️ Скинути — повертає до початкового тексту
   const reset = document.createElement('button');
   reset.textContent = '♻️ Скинути';
   reset.onclick = () => {
@@ -101,10 +104,10 @@ function makeBlock(cat, originalText) {
   };
   ctrl.appendChild(reset);
 
+  // Додаємо кнопки до блоку
   wrap.appendChild(ctrl);
   content.appendChild(wrap);
 }
-
 
 /* ------------------ Старт ------------------ */
 renderButtons();
