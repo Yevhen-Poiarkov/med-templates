@@ -72,65 +72,39 @@ function showCategory(cat){
 }
 
 /* ------------------ Створення блоку тексту ------------------ */
-function makeBlock(cat, text) {
+function makeBlock(cat, originalText) {
   const wrap = document.createElement('div');
   wrap.className = 'text-block';
 
+  // Поле з текстом (редаговане, але без збереження)
   const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.readOnly = false; // тепер завжди редагується
+  ta.value = originalText;
   wrap.appendChild(ta);
 
+  // Контейнер для кнопок
   const ctrl = document.createElement('div');
   ctrl.className = 'controls';
 
-  // Кнопка копіювати
+  // 📋 Копіювати
   const copy = document.createElement('button');
   copy.textContent = '📋 Копіювати';
   copy.onclick = () => {
-    ta.select();
-    document.execCommand('copy');
-    freq[cat] = freq[cat] || {};
-    freq[cat][text] = (freq[cat][text] || 0) + 1;
-    save();
+    navigator.clipboard.writeText(ta.value);
   };
   ctrl.appendChild(copy);
 
-  // Кнопка скинути до оригіналу
-  const rst = document.createElement('button');
-  rst.textContent = '♻️ Скинути';
-  rst.onclick = () => ta.value = text;
-  ctrl.appendChild(rst);
-
-  // Якщо режим редагування – дати змогу видалити або змінити оригінал
-  if (editMode) {
-    // Видалити
-    const del = document.createElement('button');
-    del.textContent = '🗑️ Видалити';
-    del.onclick = () => {
-      if (confirm('Справді видалити?')) {
-        templates[cat] = templates[cat].filter(t => t !== text);
-        save();
-        showCategory(cat);
-      }
-    };
-    ctrl.appendChild(del);
-
-    // Зберегти як новий шаблон
-    const saveBtn = document.createElement('button');
-    saveBtn.textContent = '💾 Зберегти зміни';
-    saveBtn.onclick = () => {
-      const idx = templates[cat].indexOf(text);
-      if (idx !== -1) templates[cat][idx] = ta.value;
-      save();
-      showCategory(cat);
-    };
-    ctrl.appendChild(saveBtn);
-  }
+  // ♻️ Скинути
+  const reset = document.createElement('button');
+  reset.textContent = '♻️ Скинути';
+  reset.onclick = () => {
+    ta.value = originalText;
+  };
+  ctrl.appendChild(reset);
 
   wrap.appendChild(ctrl);
   content.appendChild(wrap);
 }
+
 
 /* ------------------ Старт ------------------ */
 renderButtons();
