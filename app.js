@@ -36,41 +36,6 @@ const save = () => {
 const sortByUse = (arr, cat) =>
   arr.slice().sort((a,b) => (freq[cat]?.[b]||0) - (freq[cat]?.[a]||0));
 
-/* ------------------ Рендер кнопок‑категорій ------------------ */
-function renderButtons(){
-  btnBox.innerHTML = '';
-  Object.keys(templates).forEach(cat=>{
-    const b=document.createElement('button');
-    b.textContent=cat;
-    b.onclick = ()=>showCategory(cat);
-    btnBox.appendChild(b);
-  });
-  if(editMode){
-    const add=document.createElement('button');
-    add.textContent='+ Додати категорію';
-    add.onclick = ()=>{
-      const n=prompt('Назва:'); if(!n) return;
-      templates[n]=[]; save(); renderButtons();
-    };
-    btnBox.appendChild(add);
-  }
-}
-
-/* ------------------ Показ категорії ------------------ */
-function showCategory(cat){
-  content.innerHTML='';
-  sortByUse(templates[cat],cat).forEach(t=>makeBlock(cat,t));
-  if(editMode){
-    const add=document.createElement('button');
-    add.textContent='+ Додати текст';
-    add.onclick=()=>{
-      const v=prompt('Новий текст:'); if(!v) return;
-      templates[cat].push(v); save(); showCategory(cat);
-    };
-    content.appendChild(add);
-  }
-}
-
 /* ------------------ Створення блоку тексту ------------------ */
 function makeBlock(cat, originalText) {
   const wrap = document.createElement('div');
@@ -107,6 +72,41 @@ function makeBlock(cat, originalText) {
   // Додаємо кнопки до блоку
   wrap.appendChild(ctrl);
   content.appendChild(wrap);
+}
+
+/* ------------------ Рендер кнопок‑категорій ------------------ */
+function renderButtons(){
+  btnBox.innerHTML = '';
+  Object.keys(templates).forEach(cat=>{
+    const b=document.createElement('button');
+    b.textContent=cat;
+    b.onclick = ()=>showCategory(cat);
+    btnBox.appendChild(b);
+  });
+  if(editMode){
+    const add=document.createElement('button');
+    add.textContent='+ Додати категорію';
+    add.onclick = ()=>{
+      const n=prompt('Назва:'); if(!n) return;
+      templates[n]=[]; save(); renderButtons();
+    };
+    btnBox.appendChild(add);
+  }
+}
+
+/* ------------------ Показ категорії ------------------ */
+function showCategory(cat){
+  content.innerHTML='';
+  sortByUse(templates[cat],cat).forEach(t=>makeBlock(cat,t));
+  if(editMode){
+    const add=document.createElement('button');
+    add.textContent='+ Додати текст';
+    add.onclick=()=>{
+      const v=prompt('Новий текст:'); if(!v) return;
+      templates[cat].push(v); save(); showCategory(cat);
+    };
+    content.appendChild(add);
+  }
 }
 
 /* ------------------ Старт ------------------ */
