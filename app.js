@@ -72,57 +72,65 @@ function showCategory(cat){
 }
 
 /* ------------------ Створення блоку тексту ------------------ */
-function makeBlock(cat,text){
-  const wrap=document.createElement('div');
-  wrap.className='text-block';
+function makeBlock(cat, text) {
+  const wrap = document.createElement('div');
+  wrap.className = 'text-block';
 
-  const ta=document.createElement('textarea');
-  ta.value=text; ta.readOnly=!editMode;
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.readOnly = false; // тепер завжди редагується
+  wrap.appendChild(ta);
 
-  const ctrl=document.createElement('div'); ctrl.className='controls';
+  const ctrl = document.createElement('div');
+  ctrl.className = 'controls';
 
-  /* копіювання */
-  const copy=document.createElement('button');
-  copy.textContent='📋 Копіювати';
-  copy.onclick=()=>{
-    ta.select(); document.execCommand('copy');
-    freq[cat]=freq[cat]||{}; freq[cat][text]=(freq[cat][text]||0)+1;
+  // Кнопка копіювати
+  const copy = document.createElement('button');
+  copy.textContent = '📋 Копіювати';
+  copy.onclick = () => {
+    ta.select();
+    document.execCommand('copy');
+    freq[cat] = freq[cat] || {};
+    freq[cat][text] = (freq[cat][text] || 0) + 1;
     save();
   };
   ctrl.appendChild(copy);
 
-  /* скидання */
-  const rst=document.createElement('button');
-  rst.textContent='♻️ Скинути';
-  rst.onclick=()=>ta.value=text;
+  // Кнопка скинути до оригіналу
+  const rst = document.createElement('button');
+  rst.textContent = '♻️ Скинути';
+  rst.onclick = () => ta.value = text;
   ctrl.appendChild(rst);
 
-  /* редагування / видалення у режимі редагування */
-  if(editMode){
-    ta.onchange=()=>{
-      const i=templates[cat].indexOf(text);
-      if(i>-1) templates[cat][i]=ta.value; save();
-    };
-    const del=document.createElement('button');
-    del.textContent='🗑️ Видалити';
-    del.onclick=()=>{
-      if(confirm('Справді видалити?')){
-        templates[cat]=templates[cat].filter(t=>t!==text);
-        save(); showCategory(cat);
+  // Якщо режим редагування – дати змогу видалити або змінити оригінал
+  if (editMode) {
+    // Видалити
+    const del = document.createElement('button');
+    del.textContent = '🗑️ Видалити';
+    del.onclick = () => {
+      if (confirm('Справді видалити?')) {
+        templates[cat] = templates[cat].filter(t => t !== text);
+        save();
+        showCategory(cat);
       }
     };
     ctrl.appendChild(del);
+
+    // Зберегти як новий шаблон
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '💾 Зберегти зміни';
+    saveBtn.onclick = () => {
+      const idx = templates[cat].indexOf(text);
+      if (idx !== -1) templates[cat][idx] = ta.value;
+      save();
+      showCategory(cat);
+    };
+    ctrl.appendChild(saveBtn);
   }
 
-  wrap.appendChild(ta); wrap.appendChild(ctrl); content.appendChild(wrap);
+  wrap.appendChild(ctrl);
+  content.appendChild(wrap);
 }
-
-/* ------------------ Перемикач режиму ------------------ */
-editBtn.onclick = ()=>{
-  editMode=!editMode;
-  editBtn.textContent = editMode ? '🚫 Завершити' : '🖊️ Редагувати';
-  renderButtons(); content.innerHTML='';
-};
 
 /* ------------------ Старт ------------------ */
 renderButtons();
