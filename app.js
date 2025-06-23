@@ -51,10 +51,34 @@ editBtn.onclick = () => {
 function renderButtons() {
   btnBox.innerHTML = '';
   Object.keys(templates).forEach(cat => {
+    const group = document.createElement('div');
+    group.style.display = 'inline-flex';
+    group.style.margin = '3px';
+
     const b = document.createElement('button');
     b.textContent = cat;
     b.onclick = () => showCategory(cat);
-    btnBox.appendChild(b);
+    group.appendChild(b);
+
+    if (editMode) {
+      const rename = document.createElement('button');
+      rename.textContent = '📝';
+      rename.title = 'Перейменувати';
+      rename.onclick = () => {
+        const newName = prompt('Нова назва категорії:', cat);
+        if (!newName || newName === cat || templates[newName]) return;
+        templates[newName] = templates[cat];
+        delete templates[cat];
+        if (freq[cat]) {
+          freq[newName] = freq[cat];
+          delete freq[cat];
+        }
+        save(); renderButtons();
+      };
+      group.appendChild(rename);
+    }
+
+    btnBox.appendChild(group);
   });
 
   if (editMode) {
@@ -69,6 +93,7 @@ function renderButtons() {
     btnBox.appendChild(addCat);
   }
 }
+
 
 function showCategory(cat) {
   content.innerHTML = '';
