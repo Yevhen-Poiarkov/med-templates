@@ -35,7 +35,30 @@
 
   <div id="buttons"></div><hr />
   <div id="content"></div>
+  
+<button id="installPWA" style="display:none;margin:8px 0;">⬇️ Встановити додаток</button>
 
+<script>
+  /* ===== PWA-встановлення ===== */
+  let deferredPrompt;
+  const installBtn = document.getElementById('installPWA');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();           // блокуємо стандартний банер
+    deferredPrompt = e;           // зберігаємо подію
+    installBtn.style.display = 'block';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();                      // відкриваємо системний банер
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') console.log('PWA встановлено');
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+</script>
+  
   <script src="app.js"></script>
 </body>
 </html>
