@@ -1,3 +1,5 @@
+let editMode = false;
+
 /* ---------- початкові шаблони ---------- */
 const DEFAULT_TEMPLATES = {
   "Скарги": [
