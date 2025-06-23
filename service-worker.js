@@ -1,25 +1,22 @@
-const CACHE = 'templates-cache-v1';
-const PREF = '/med-templates/';
-const FILES = [
-  PREF,
-  PREF + 'index.html',
-  PREF + 'app.js',
-  PREF + 'manifest.json',
-  PREF + 'service-worker.js',
-  PREF + 'icons/icon-192.png',
-  PREF + 'icons/icon-512.png'
+const CACHE = 'med-templates-v1';
+const ASSETS = [
+  '/med-templates/',
+  '/med-templates/index.html',
+  '/med-templates/app.js',
+  '/med-templates/manifest.json',
+  '/med-templates/icons/icon-192.png',
+  '/med-templates/icons/icon-512.png'
 ];
 
 self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
   self.skipWaiting();
 });
-self.addEventListener('activate', e=>{
-  e.waitUntil(
-    caches.keys().then(keys=>Promise.all(keys.map(k=>k!==CACHE && caches.delete(k))))
-  );
-  self.clients.claim();
-});
+
+self.addEventListener('activate', e=>self.clients.claim());
+
 self.addEventListener('fetch', e=>{
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+  e.respondWith(
+    caches.match(e.request).then(r=>r||fetch(e.request))
+  );
 });
