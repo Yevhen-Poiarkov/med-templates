@@ -37,39 +37,33 @@ const sortByUse = (arr, cat) =>
   arr.slice().sort((a,b) => (freq[cat]?.[b]||0) - (freq[cat]?.[a]||0));
 
 /* ------------------ Створення блоку тексту ------------------ */
+/** Створює картку з textarea + 2 кнопки */
 function makeBlock(cat, originalText) {
   const wrap = document.createElement('div');
-  wrap.className = 'text-block';
+  wrap.className = 'text-block';          // більше НЕ додаємо .readonly
 
-  // Створюємо textarea з текстом шаблону
+  /* ===== Текстове поле завжди редаговане  ===== */
   const ta = document.createElement('textarea');
-  ta.value = originalText;
+  ta.value = originalText;                // початковий шаблон
+  //  ❌ НЕ ставимо readOnly / disabled – воно редагується одразу
   wrap.appendChild(ta);
 
-  // Кнопки
+  /* ===== Кнопки ===== */
   const ctrl = document.createElement('div');
   ctrl.className = 'controls';
 
-  // 📋 Копіювати редаговане значення
+  // 📋 Копіювати ВЖЕ відредаговане
   const copy = document.createElement('button');
   copy.textContent = '📋 Копіювати';
-  copy.onclick = () => {
-    navigator.clipboard.writeText(ta.value)
-      .then(() => {
-        console.log("Скопійовано:", ta.value);
-      });
-  };
+  copy.onclick = () => navigator.clipboard.writeText(ta.value);
   ctrl.appendChild(copy);
 
-  // ♻️ Скинути — повертає до початкового тексту
+  // ♻️ Скинути до оригінального варіанту
   const reset = document.createElement('button');
   reset.textContent = '♻️ Скинути';
-  reset.onclick = () => {
-    ta.value = originalText;
-  };
+  reset.onclick  = () => ta.value = originalText;
   ctrl.appendChild(reset);
 
-  // Додаємо кнопки до блоку
   wrap.appendChild(ctrl);
   content.appendChild(wrap);
 }
