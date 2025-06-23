@@ -15,6 +15,12 @@ const DEFAULT_TEMPLATES = {
 /* ---------- DOM ---------- */
 const btnBox  = document.getElementById('buttons');
 const content = document.getElementById('content');
+document.getElementById('editToggle').onclick = () => {
+  editMode = !editMode;
+  renderButtons();
+  content.innerHTML = editMode ? '<p>Увімкнено режим редагування</p>' : '';
+};
+
 
 /* ---------- створення кнопок-категорій ---------- */
 Object.keys(DEFAULT_TEMPLATES).forEach(cat=>{
