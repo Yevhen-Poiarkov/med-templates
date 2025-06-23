@@ -1,3 +1,7 @@
+/* ---------- початкові дані ---------- */
+const LS_FREQ  = 'medTemplatesFreq';   // лічильник копіювань
+const LS_DATA  = 'medTemplatesData';   // ваші збережені шаблони
+
 const DEFAULT_TEMPLATES = {
   "Скарги": [
     "Пацієнт скаржиться на хропіння, часті пробудження вночі та денну сонливість.",
@@ -9,11 +13,34 @@ const DEFAULT_TEMPLATES = {
   ]
 };
 
-let editMode = false;
+/* ---------- завантаження з localStorage ---------- */
+let templates = JSON.parse(localStorage.getItem(LS_DATA)) || structuredClone(DEFAULT_TEMPLATES);
+let freq      = JSON.parse(localStorage.getItem(LS_FREQ)) || {};
+let editMode  = false;
+
+/* ---------- DOM ---------- */
+const btnBox  = document.getElementById('buttons');
 const content = document.getElementById('content');
-const btnBox = document.getElementById('buttons');
 const editBtn = document.getElementById('editToggle');
 
+/* ---------- helpers ---------- */
+const save = () => {
+  localStorage.setItem(LS_DATA,  JSON.stringify(templates));
+  localStorage.setItem(LS_FREQ,  JSON.stringify(freq));
+};
+
+const hit = (cat, txt) => {
+  freq[cat] ??= {};
+  freq[cat][txt] = (freq[cat][txt] || 0) + 1;
+  save();
+};
+
+const sorted = (cat) =>
+  templates[cat]
+    .slice()
+    .sort((a, b) => (freq[cat]?.[b]||0) - (freq[cat]?.[a]||0));
+
+/* ---------- UI ---------- */
 editBtn.onclick = () => {
   editMode = !editMode;
   editBtn.textContent = editMode ? '❌ Вимкнути редагування' : '✏️ Увімкнути редагування';
@@ -23,7 +50,7 @@ editBtn.onclick = () => {
 
 function renderButtons() {
   btnBox.innerHTML = '';
-  Object.keys(DEFAULT_TEMPLATES).forEach(cat => {
+  Object.keys(templates).forEach(cat => {
     const b = document.createElement('button');
     b.textContent = cat;
     b.onclick = () => showCategory(cat);
@@ -35,9 +62,9 @@ function renderButtons() {
     addCat.textContent = '+ Додати категорію';
     addCat.onclick = () => {
       const name = prompt('Назва категорії:');
-      if (!name || DEFAULT_TEMPLATES[name]) return;
-      DEFAULT_TEMPLATES[name] = [];
-      renderButtons();
+      if (!name || templates[name]) return;
+      templates[name] = [];
+      save(); renderButtons();
     };
     btnBox.appendChild(addCat);
   }
@@ -45,7 +72,7 @@ function renderButtons() {
 
 function showCategory(cat) {
   content.innerHTML = '';
-  DEFAULT_TEMPLATES[cat].forEach(t => makeBlock(cat, t));
+  sorted(cat).forEach(t => makeBlock(cat, t));
 
   if (editMode) {
     const add = document.createElement('button');
@@ -53,8 +80,8 @@ function showCategory(cat) {
     add.onclick = () => {
       const val = prompt('Новий шаблон:');
       if (!val) return;
-      DEFAULT_TEMPLATES[cat].push(val);
-      showCategory(cat);
+      templates[cat].push(val);
+      save(); showCategory(cat);
     };
     content.appendChild(add);
   }
@@ -73,7 +100,11 @@ function makeBlock(cat, originalText) {
 
   const copy = document.createElement('button');
   copy.textContent = '📋 Копіювати';
-  copy.onclick = () => navigator.clipboard.writeText(ta.value);
+  copy.onclick = () => {
+    navigator.clipboard.writeText(ta.value);
+    hit(cat, originalText);         // лічильник
+    showCategory(cat);              // відразу пересортувати
+  };
   ctrl.appendChild(copy);
 
   const reset = document.createElement('button');
@@ -85,8 +116,9 @@ function makeBlock(cat, originalText) {
     const del = document.createElement('button');
     del.textContent = '🗑️ Видалити';
     del.onclick = () => {
-      DEFAULT_TEMPLATES[cat] = DEFAULT_TEMPLATES[cat].filter(t => t !== originalText);
-      showCategory(cat);
+      templates[cat] = templates[cat].filter(t => t !== originalText);
+      delete freq[cat]?.[originalText];
+      save(); showCategory(cat);
     };
     ctrl.appendChild(del);
   }
@@ -95,4 +127,4 @@ function makeBlock(cat, originalText) {
   content.appendChild(wrap);
 }
 
-renderButtons();
+renderButtons();          // старт
