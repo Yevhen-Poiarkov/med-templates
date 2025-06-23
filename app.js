@@ -48,49 +48,62 @@ editBtn.onclick = () => {
   content.innerHTML = '';
 };
 
-function renderButtons() {
+function renderButtons(){
   btnBox.innerHTML = '';
-  Object.keys(templates).forEach(cat => {
+
+  Object.keys(templates).forEach(cat=>{
     const group = document.createElement('div');
-    group.style.display = 'inline-flex';
-    group.style.margin = '3px';
+    group.style.display='inline-flex';
+    group.style.margin='3px';
 
-    const b = document.createElement('button');
-    b.textContent = cat;
-    b.onclick = () => showCategory(cat);
-    group.appendChild(b);
+    /* основна кнопка категорії */
+    const btn = document.createElement('button');
+    btn.textContent = cat;
+    btn.onclick = () => showCategory(cat);
+    group.appendChild(btn);
 
-    if (editMode) {
-      const rename = document.createElement('button');
-      rename.textContent = '📝';
-      rename.title = 'Перейменувати';
-      rename.onclick = () => {
-        const newName = prompt('Нова назва категорії:', cat);
-        if (!newName || newName === cat || templates[newName]) return;
-        templates[newName] = templates[cat];
+    if(editMode){
+      /* 📝 перейменувати */
+      const rn = document.createElement('button');
+      rn.textContent = '📝';
+      rn.title = 'Перейменувати';
+      rn.onclick = () => {
+        const nw = prompt('Нова назва:', cat);
+        if (!nw || nw === cat || templates[nw]) return;
+        templates[nw] = templates[cat];
         delete templates[cat];
-        if (freq[cat]) {
-          freq[newName] = freq[cat];
-          delete freq[cat];
-        }
-        save(); renderButtons();
+        if (freq[cat]) { freq[nw] = freq[cat]; delete freq[cat]; }
+        save(); renderButtons(); content.innerHTML='';
       };
-      group.appendChild(rename);
+      group.appendChild(rn);
+
+      /* 🗑️ видалити категорію */
+      const del = document.createElement('button');
+      del.textContent = '🗑️';
+      del.title = 'Видалити категорію';
+      del.onclick = () => {
+        if (!confirm(`Видалити категорію «${cat}» разом із шаблонами?`)) return;
+        delete templates[cat];
+        delete freq[cat];
+        save(); renderButtons(); content.innerHTML='';
+      };
+      group.appendChild(del);
     }
 
     btnBox.appendChild(group);
   });
 
-  if (editMode) {
-    const addCat = document.createElement('button');
-    addCat.textContent = '+ Додати категорію';
-    addCat.onclick = () => {
-      const name = prompt('Назва категорії:');
-      if (!name || templates[name]) return;
-      templates[name] = [];
+  /* + Додати категорію */
+  if(editMode){
+    const add = document.createElement('button');
+    add.textContent = '+ Додати категорію';
+    add.onclick = () => {
+      const n = prompt('Назва категорії:');
+      if (!n || templates[n]) return;
+      templates[n] = [];
       save(); renderButtons();
     };
-    btnBox.appendChild(addCat);
+    btnBox.appendChild(add);
   }
 }
 
