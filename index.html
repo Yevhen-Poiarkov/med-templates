@@ -35,6 +35,27 @@
 
 <!-- кнопка власного встановлення -->
 <button id="installPWA" style="display:none;margin-top:10px;">⬇️ Встановити додаток</button>
+  
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCq3Fa-ugt2AYubk8VQfUgV7ez6FVko4CE",
+    authDomain: "med-templates.firebaseapp.com",
+    databaseURL: "https://med-templates-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "med-templates",
+    storageBucket: "med-templates.firebasestorage.app",
+    messagingSenderId: "94861575337",
+    appId: "1:94861575337:web:a0ad8be2655e96dcce55b8"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  window.dbRefTemplates = db.ref('templates');
+  window.dbRefFreq      = db.ref('freq');
+</script>
 
 <script src="app.js"></script>
 <script>
