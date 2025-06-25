@@ -141,7 +141,6 @@ function makeBlock(cat, originalText) {
   copy.onclick = () => {
     navigator.clipboard.writeText(ta.value);
     hit(cat, originalText);         // лічильник
-    showCategory(cat);              // відразу пересортувати
   };
   ctrl.appendChild(copy);
 
