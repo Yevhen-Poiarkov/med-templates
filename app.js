@@ -25,9 +25,17 @@ const editBtn = document.getElementById('editToggle');
 
 /* ---------- helpers ---------- */
 const save = () => {
-  localStorage.setItem(LS_DATA,  JSON.stringify(templates));
-  localStorage.setItem(LS_FREQ,  JSON.stringify(freq));
+  // локально (щоб офлайн теж працювало)
+  localStorage.setItem(LS_DATA, JSON.stringify(templates));
+  localStorage.setItem(LS_FREQ, JSON.stringify(freq));
+
+  // у хмару
+  if (window.dbRefTemplates){
+    dbRefTemplates.set(templates);
+    dbRefFreq.set(freq);
+  }
 };
+
 
 const hit = (cat, txt) => {
   freq[cat] ??= {};
@@ -47,6 +55,17 @@ editBtn.onclick = () => {
   renderButtons();
   content.innerHTML = '';
 };
+
+/* якщо Firebase підключений — слухаємо змін у БД */
+if (window.dbRefTemplates) {
+  dbRefTemplates.on('value', snap=>{
+    templates = snap.val() || DEFAULT_TEMPLATES;
+    renderButtons(); content.innerHTML='';
+  });
+  dbRefFreq.on('value', snap=>{
+    freq = snap.val() || {};
+  });
+}
 
 function renderButtons(){
   btnBox.innerHTML = '';
