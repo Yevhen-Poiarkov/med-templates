@@ -25,16 +25,25 @@ const editBtn = document.getElementById('editToggle');
 
 /* ---------- helpers ---------- */
 const save = () => {
-  // локально (щоб офлайн теж працювало)
   localStorage.setItem(LS_DATA, JSON.stringify(templates));
   localStorage.setItem(LS_FREQ, JSON.stringify(freq));
-
-  // у хмару
-  if (window.dbRefTemplates){
+  if (window.dbRefTemplates) {
     dbRefTemplates.set(templates);
     dbRefFreq.set(freq);
   }
 };
+
+  // у хмару
+ if (window.dbRefTemplates) {
+  dbRefTemplates.on('value', snap => {
+    templates = snap.val() ?? structuredClone(DEFAULT_TEMPLATES);
+    renderButtons();          // перемальовує меню
+    content.innerHTML = '';   // чистимо праву панель
+  });
+  dbRefFreq.on('value', snap => {
+    freq = snap.val() ?? {};
+  });
+}
 
 
 const hit = (cat, txt) => {
