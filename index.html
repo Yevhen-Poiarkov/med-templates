@@ -40,21 +40,24 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
   const firebaseConfig = {
-  apiKey: "AIzaSyCq3Fa-ugt2AYubk8VQfUgV7ez6FVko4CE",
-  authDomain: "med-templates.firebaseapp.com",
-  projectId: "med-templates",
-  storageBucket: "med-templates.firebasestorage.app",
-  messagingSenderId: "94861575337",
-  appId: "1:94861575337:web:a0ad8be2655e96dcce55b8"
-};
+    apiKey: "AIzaSyBBuSnEX7uiH4dEZeCzB03iwCExtVITlM8",
+    authDomain: "med-templates-7bfc5.firebaseapp.com",
+    projectId: "med-templates-7bfc5",
+    storageBucket: "med-templates-7bfc5.firebasestorage.app",
+    messagingSenderId: "779349305566",
+    appId: "1:779349305566:web:5fb27cdd84f17548b7fa4f"
+  };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const db  = firebase.database();
-
-  window.dbRefTemplates = db.ref('templates');
-  window.dbRefFreq      = db.ref('freq');
 </script>
 
 <script src="app.js"></script>
