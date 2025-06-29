@@ -35,10 +35,10 @@
 
 <!-- кнопка власного встановлення -->
 <button id="installPWA" style="display:none;margin-top:10px;">⬇️ Встановити додаток</button>
-  
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js"></script>
+
+<!-- Firebase SDK compat (версія 9) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -52,13 +52,15 @@
   };
 
   const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  const db  = firebase.database();
+
   window.dbRefTemplates = db.ref('templates');
   window.dbRefFreq      = db.ref('freq');
 </script>
 
 <script src="app.js"></script>
 <script>
+  
   /* ----- install prompt ----- */
   let deferredPrompt;
   const installBtn=document.getElementById('installPWA');
