@@ -42,16 +42,15 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyCq3Fa-ugt2AYubk8VQfUgV7ez6FVko4CE",
-    authDomain: "med-templates.firebaseapp.com",
-    databaseURL: "https://med-templates-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "med-templates",
-    storageBucket: "med-templates.firebasestorage.app",
-    messagingSenderId: "94861575337",
-    appId: "1:94861575337:web:a0ad8be2655e96dcce55b8"
-  };
+  apiKey: "AIzaSyCq3Fa-ugt2AYubk8VQfUgV7ez6FVko4CE",
+  authDomain: "med-templates.firebaseapp.com",
+  projectId: "med-templates",
+  storageBucket: "med-templates.firebasestorage.app",
+  messagingSenderId: "94861575337",
+  appId: "1:94861575337:web:a0ad8be2655e96dcce55b8"
+};
 
-  const app = firebase.initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
   const db  = firebase.database();
 
   window.dbRefTemplates = db.ref('templates');
